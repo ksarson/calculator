@@ -3,23 +3,29 @@ function createCalculator(gridHeight, gridWidth, buttonLabels)
     let tempLabels = buttonLabels;
     let squareHeight = (1/gridHeight)*100;
     let squareWidth = (1/gridWidth)*100;
+
+    // rows
     for(let i=0; i<gridHeight; i++)
     {
+        // row for each gridHeight
         const gridRow = document.createElement('div');
         gridRow.setAttribute('class', 'grid-row');
         gridRow.style.height = `${squareHeight}%`
         gridContainer.appendChild(gridRow);
 
+        // columns
         for(let j=0; j<gridWidth; j++)
         {
             let label = tempLabels.shift();
             let labelText = getLabelText(label);
 
+            // square for each gridWidth inside of each row
             const gridSquare = document.createElement('div');
             gridSquare.setAttribute('class', 'grid-square');
             gridSquare.style.width = `${squareWidth}%`
             gridRow.appendChild(gridSquare);
 
+            // button in each square
             const calcButton = document.createElement('button');
             calcButton.setAttribute('class', `calc-button button-${labelText}`);
             calcButton.innerHTML = label;
@@ -67,6 +73,7 @@ function appendString(label)
         }
         equationString = equationString.concat(label);
     }
+
     text = document.createTextNode(equationString);
     outputContainer.innerHTML = '';
     outputContainer.appendChild(text);
@@ -74,14 +81,17 @@ function appendString(label)
 
 function createUniqueButtons()
 {
+    // equals button initiates calculation
     equalsButton = document.getElementsByClassName('button-equals');
     equalsButton[0].style.color = 'red';
     equalsButton[0].addEventListener('click', e => solveEquation());
 
+    // clear button removes last typed value
     clearButton = document.getElementsByClassName('button-C');
     clearButton[0].style.color = 'red';
     clearButton[0].addEventListener('click', e => clearLast());
 
+    // clear everything button sets the equation back to blank
     clearEverythingButton = document.getElementsByClassName('button-CE');
     clearEverythingButton[0].style.color = 'red';
     clearEverythingButton[0].addEventListener('click', e => clearEverything());
@@ -91,40 +101,37 @@ function solveEquation()
 {
     if(validateEquation())
     {
-        console.log('solving');
+        const result = evaluateEquation(equationString);
+        updateOutput(result);
     }
     else
     {
-        console.log('not solving');
+        updateOutput('Invalid');
     }
 }
 
 function validateEquation() {
-    // Check for invalid characters
+    // invalid characters
     const invalidCharsRegex = /[^0-9+\-*/.()]/;
     if (invalidCharsRegex.test(equationString)) {
-        console.log('Invalid characters in the equation');
         return false;
     }
 
-    // Check for invalid operator placements
+    // invalid operator placements
     const invalidOperatorPlacementRegex = /(\d\s*\()|(\)\s*\d)|([+\-*/.]\s*[+\-*/.])/;
     if (invalidOperatorPlacementRegex.test(equationString)) {
-        console.log('Invalid operator placement');
         return false;
     }
 
-    // Check for unbalanced parentheses
+    // balanced parentheses
     if (!areParenthesesBalanced(equationString)) {
-        console.log('Unbalanced parentheses');
         return false;
     }
 
-    // Check that the equation doesn't start or end with an operator
+    // equation doesn't start or end with an operator
     const startsWithOperatorRegex = /^[+\-*/.]/;
     const endsWithOperatorRegex = /[+\-*/.]$/;
     if (startsWithOperatorRegex.test(equationString) || endsWithOperatorRegex.test(equationString)) {
-        console.log('Equation cannot start or end with an operator');
         return false;
     }
 
@@ -154,11 +161,138 @@ function areParenthesesBalanced(equation)
     return stack.length === 0;
 }
 
+function evaluateEquation(equation) 
+{
+    const operators = { '+': 1, '-': 1, '*': 2, '/': 2 };
+
+    // get the precedence of an operator
+    function precedence(operator) {
+        return operators[operator] || 0;
+    }
+
+    // check if a token is an operator
+    function isOperator(token) {
+        return token in operators;
+    }
+
+    // apply an operator to operands
+    function applyOperator(operator, operands) {
+        const b = operands.pop();
+        const a = operands.pop();
+
+        switch (operator) {
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                return a / b;
+            default:
+                return;
+        }
+    }
+
+    // convert the equation into postfix notation
+    function convertToPostfix(tokens) {
+        const output = [];
+        const operatorStack = [];
+
+        for (const token of tokens) 
+        {
+            if (!isNaN(token)) 
+            {
+                output.push(parseFloat(token));
+            } 
+            else if (token === '(') 
+            {
+                operatorStack.push(token);
+            } 
+            else if (token === ')') 
+            {
+                // if ')', pop operators from the stack to the output until '(' is encountered
+                while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') 
+                {
+                    output.push(operatorStack.pop());
+                }
+                operatorStack.pop(); // Remove '(' from the stack
+            } 
+            else if (isOperator(token)) 
+            {
+                // if an operator, pop operators from the stack to the output based on precedence
+                while (operatorStack.length > 0 && precedence(operatorStack[operatorStack.length - 1]) >= precedence(token)) 
+                {
+                    output.push(operatorStack.pop());
+                }
+                operatorStack.push(token);
+            }
+        }
+
+        // pop any remaining operators from the stack to the output
+        while (operatorStack.length > 0) 
+        {
+            output.push(operatorStack.pop());
+        }
+
+        return output;
+    }
+
+    // calculate the result of the postfix equation
+    function calculateResult(postfixTokens) {
+        const stack = [];
+    
+        for (const token of postfixTokens) {
+            if (!isNaN(token)) {
+                stack.push(parseFloat(token));
+            } else if (isOperator(token)) {
+                if (stack.length < 2) {
+                    return 'Invalid';
+                }
+    
+                const b = stack.pop();
+                const a = stack.pop();
+    
+                switch (token) {
+                    case '+':
+                        stack.push(a + b);
+                        break;
+                    case '-':
+                        stack.push(a - b);
+                        break;
+                    case '*':
+                        stack.push(a * b);
+                        break;
+                    case '/':
+                        stack.push(a / b);
+                        break;
+                    default:
+                        return 'Invalid';
+                }
+            }
+        }
+    
+        if (stack.length !== 1) 
+        {
+            return 'Invalid';
+        }
+    
+        return stack.pop();
+    }
+    
+    const tokens = equation.match(/([0-9]+(?:\.[0-9]+)?|[\+\-\*\/\(\)])/g) || [];
+    const postfixTokens = convertToPostfix(tokens);
+    const result = calculateResult(postfixTokens);
+
+    return result;
+}
+
 function updateOutput(result) 
 {
     if (result !== null && result !== undefined) 
     {
-        equationString = result.toString(); // Update equationString with the result
+        // updates output when valid result found
+        equationString = result.toString();
         text = document.createTextNode(equationString);
         outputContainer.innerHTML = '';
         outputContainer.appendChild(text);
@@ -166,7 +300,6 @@ function updateOutput(result)
     else 
     {
         equationString = '';
-        console.log('Invalid result. Unable to update output.');
     }
 }
 
@@ -174,6 +307,7 @@ function clearLast()
 {
     if (equationString === 'Invalid' || equationString === 'Infinity' || equationString === 'NaN')
     {
+        // to treat keywords as a single value in the output screen
         clearEverything();
         return;
     }
