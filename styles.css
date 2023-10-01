@@ -1,7 +1,7 @@
 :root {
-    --font-family: 'Arial', sans-serif;
-    --bg-color: slategrey;
-    --calculator-color: rgba(20, 20, 50, 0.4);
+    --font-family: 'Roboto', 'Arial', sans-serif;
+    --bg-color: rgb(115, 135, 150);
+    --calculator-color: rgb(60, 60, 100);
     --calculator-output-color: rgb(200, 215, 255);
     --calculator-button-color: rgb(255, 255, 255);
     --calculator-button-shadow-color: rgb(175, 175, 175);
@@ -26,7 +26,7 @@
 
 :root[data-theme='autumn'] {
     --font-family: 'Roboto', 'Arial', sans-serif;
-    --bg-color: rgba(100, 80, 60, 0.8);
+    --bg-color: rgb(120, 105, 90);
     --calculator-color: rgb(120, 0, 20);
     --calculator-output-color: rgb(190, 150, 115);
     --calculator-button-color: rgb(250, 235, 200);
