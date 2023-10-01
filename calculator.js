@@ -1,3 +1,25 @@
+function createThemeButtons(numberOfThemes, buttonLabels) {
+    let tempLabels = buttonLabels;
+
+    for (let i = 0; i < numberOfThemes; i++) {
+        let label = tempLabels.shift();
+        let labelText = getLabelText(label);
+        const themeButton = document.createElement('button');
+        themeButton.setAttribute('class', `theme-button theme-${labelText}`);
+        themeButton.innerHTML = label;
+        themeButton.addEventListener('click', (e) => {
+            changeTheme(labelText);
+        });
+        themesContainer.appendChild(themeButton);
+    }
+}
+
+function changeTheme(theme) {
+    console.log(theme);
+    const htmlElement = document.getElementById('htmlElement');
+    htmlElement.setAttribute('data-theme', theme);
+}
+
 function createCalculator(gridHeight, gridWidth, buttonLabels) {
     let tempLabels = buttonLabels;
     let squareHeight = (1 / gridHeight) * 100;
@@ -315,9 +337,34 @@ function clearEverything() {
 }
 
 let equationString = '';
+
+// container to hold theme buttons
+const numberOfThemes = 3;
+const themeButtons = ['modern', 'autumn', 'relaxed'];
+const themesContainer = document.createElement('div');
+themesContainer.setAttribute('class', 'themes-container');
+document.body.appendChild(themesContainer);
+createThemeButtons(numberOfThemes, themeButtons);
+
+// outermost container, divided into output and grid
+const calculatorContainer = document.createElement('div');
+calculatorContainer.setAttribute('class', 'calculator-container');
+document.body.appendChild(calculatorContainer);
+
+// output container
+const outputContainer = document.createElement('div');
+outputContainer.setAttribute('class', 'output-container');
+calculatorContainer.appendChild(outputContainer);
+
+// inner text area for output
+const outputTextbox = document.createElement('div');
+outputTextbox.setAttribute('class', 'output-textbox');
+outputContainer.appendChild(outputTextbox);
+
+// grid container
 const gridHeight = 5;
 const gridWidth = 4;
-const buttonLabels = [
+const calcButtonLabels = [
     '(', // row 1
     ')',
     'C',
@@ -340,23 +387,7 @@ const buttonLabels = [
     '+',
 ];
 
-// outermost container, divided into output and grid
-const calculatorContainer = document.createElement('div');
-calculatorContainer.setAttribute('class', 'calculator-container');
-document.body.appendChild(calculatorContainer);
-
-// output container
-const outputContainer = document.createElement('div');
-outputContainer.setAttribute('class', 'output-container');
-calculatorContainer.appendChild(outputContainer);
-
-// inner text area for output
-const outputTextbox = document.createElement('div');
-outputTextbox.setAttribute('class', 'output-textbox');
-outputContainer.appendChild(outputTextbox);
-
-// grid container
 const gridContainer = document.createElement('div');
 gridContainer.setAttribute('class', 'grid-container');
 calculatorContainer.appendChild(gridContainer);
-createCalculator(gridHeight, gridWidth, buttonLabels);
+createCalculator(gridHeight, gridWidth, calcButtonLabels);
