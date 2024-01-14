@@ -15,9 +15,35 @@ function createThemeButtons(numberOfThemes, buttonLabels) {
 }
 
 function changeTheme(theme) {
-    console.log(theme);
     const htmlElement = document.getElementById('htmlElement');
     htmlElement.setAttribute('data-theme', theme);
+
+    // Set font family based on the chosen theme
+    const rootStyle = document.documentElement.style;
+    switch (theme) {
+        case 'modern':
+            rootStyle.setProperty(
+                '--font-family',
+                "'Roboto', 'Arial', sans-serif"
+            );
+            break;
+        case 'autumn':
+            rootStyle.setProperty(
+                '--font-family',
+                "'Didot', 'Arial', sans-serif"
+            );
+            break;
+        case 'beach':
+            rootStyle.setProperty(
+                '--font-family',
+                "'Comic Sans MS', 'Arial', sans-serif"
+            );
+            break;
+    }
+
+    const computedStyle = window.getComputedStyle(htmlElement);
+    const fontFamily = computedStyle.getPropertyValue('font-family');
+    console.log(theme, ' Computed Font Family:', fontFamily);
 }
 
 function createCalculator(gridHeight, gridWidth, buttonLabels) {
@@ -54,6 +80,10 @@ function createCalculator(gridHeight, gridWidth, buttonLabels) {
             calcButton.innerHTML = label;
             calcButton.addEventListener('click', (e) => {
                 appendString(label);
+                const computedStyle = window.getComputedStyle(calcButton);
+                const fontFamily =
+                    computedStyle.getPropertyValue('font-family');
+                console.log(label, ' Computed Font Family:', fontFamily);
             });
             gridSquare.appendChild(calcButton);
         }
@@ -340,7 +370,7 @@ let equationString = '';
 
 // container to hold theme buttons
 const numberOfThemes = 3;
-const themeButtons = ['modern', 'autumn', 'relaxed'];
+const themeButtons = ['modern', 'autumn', 'beach'];
 const themesContainer = document.createElement('div');
 themesContainer.setAttribute('class', 'themes-container');
 document.body.appendChild(themesContainer);

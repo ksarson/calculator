@@ -1,5 +1,5 @@
 :root {
-    --font-family: 'Roboto', 'Arial', sans-serif;
+    --font-family: 'Comis Sans MS', sans-serif;
     --bg-color: rgb(115, 135, 150);
     --calculator-color: rgb(60, 60, 100);
     --calculator-output-color: rgb(200, 215, 255);
@@ -12,7 +12,7 @@
 }
 
 :root[data-theme='modern'] {
-    --font-family: 'Roboto', 'Arial', sans-serif;
+    --font-family: 'Roboto', sans-serif;
     --bg-color: rgb(115, 135, 150);
     --calculator-color: rgb(60, 60, 100);
     --calculator-output-color: rgb(200, 215, 255);
@@ -25,7 +25,7 @@
 }
 
 :root[data-theme='autumn'] {
-    --font-family: 'Roboto', 'Arial', sans-serif;
+    --font-family: 'Didot', sans-serif;
     --bg-color: rgb(120, 105, 90);
     --calculator-color: rgb(120, 0, 20);
     --calculator-output-color: rgb(190, 150, 115);
@@ -37,8 +37,8 @@
     --calculator-equals-shadow-color: rgba(220, 125, 40, 1);
 }
 
-:root[data-theme='relaxed'] {
-    --font-family: 'Roboto', 'Arial', sans-serif;
+:root[data-theme='beach'] {
+    --font-family: 'Comic Sans MS', sans-serif;
     --bg-color: rgb(175, 210, 250);
     --calculator-color: rgb(255, 240, 190);
     --calculator-output-color: rgb(135, 215, 175);
@@ -82,19 +82,19 @@ body {
 }
 
 .theme-modern {
-    font-family: 'Roboto', 'Arial', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     background-color: rgb(60, 60, 100);
     color: rgb(255, 255, 255);
 }
 
 .theme-autumn {
-    font-family: 'Roboto', 'Arial', sans-serif;
+    /* font-family: 'Didot', sans-serif; */
     background-color: rgb(120, 0, 20);
     color: rgb(255, 200, 90);
 }
 
-.theme-relaxed {
-    font-family: 'Roboto', 'Arial', sans-serif;
+.theme-beach {
+    /* font-family: 'Comic Sans MS', sans-serif; */
     background-color: rgb(255, 240, 190);
     color: rgb(115, 190, 140);
 }
@@ -169,6 +169,7 @@ body {
     border: solid rgba(0, 0, 0, 0.6) 3px;
     border-radius: 8px;
     display: flex;
+    font-family: var(--font-family);
     font-size: 36px;
     height: 80px;
     justify-content: center;
